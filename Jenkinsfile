@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             agent {
                 docker {
-                    image 'node:18'
+                    image 'node:18-alpine'
                     reuseNode true
                 }
             }
@@ -21,10 +21,16 @@ pipeline {
             }
         }
         stage('Test') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
             steps {
                 sh '''
-                    [ -f /build/index.html ] && echo "Build successful" || echo "Build failed"
-                    exit 1
+                    test -f /build/index.html
+
                     npm run test
                 '''
             }
