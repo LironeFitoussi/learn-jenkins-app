@@ -10,6 +10,7 @@ pipeline {
                 }
             }
             steps {
+                cleanWs()
                 sh '''
                     ls -la
                     node --version
@@ -17,6 +18,15 @@ pipeline {
                     npm install --prefer-offline
                     npm run build
                     ls -la
+                '''
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '''
+                    [ -f /build/index.html ] && echo "Build successful" || echo "Build failed"
+                    exit 1
+                    npm run test
                 '''
             }
         }
